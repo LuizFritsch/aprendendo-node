@@ -1,46 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- include('partials/header.ejs')%>
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio</title>
-</head>
+    <body>
+        <%- include('partials/navbar.ejs')%>
+            <div class="container">
+                <hr>
+                <h1>Perguntas</h1>
+                <hr>
+                <a href="/perguntar" class="btn btn-dark">Perguntar</a>
+                <hr>
+                <% perguntas.forEach(pergunta => { %>
+                    <br>
+                    <div class="card">
+                        <div class="card-body">
+                            <h3>
+                                <%= pergunta.titulo %>
+                            </h3>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-dark">responder</button>
+                        </div>
+                    </div>
+                    <%});%>
+            </div>
 
-<body>
-    <h1>Perguntas</h1>
-    <hr>
-    <h3>Lista de perguntas</h3>
-
-    <p>
-        <%= nome %>
-    </p>
-    <p>
-        <%= lang %>
-    </p>
-    <p>
-        <%= empresa %>
-    </p>
-    <p>
-        <%= inscritos %>
-    </p>
-
-    <h3>
-        <%= msg ? "deu erro" : "deu bom" %>
-    </h3>
-
-    <% produtos.forEach(function(produto){ %>
-        <hr>
-        <h4>
-            <%= produto.nome %>
-        </h4>
-        <h5>
-            <%= produto.preco %>
-        </h5>
-
-        <%})%>
-
-</body>
-
-</html>
+    </body>
+    <%- include('partials/footer.ejs')%>
