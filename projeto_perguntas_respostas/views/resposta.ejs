@@ -1,0 +1,53 @@
+<%- include('partials/header.ejs')%>
+
+    <body>
+        <%- include('partials/navbar.ejs')%>
+            <div class="container">
+
+                <div class="card" id="formulario-pergunta">
+                    <div class="card-header">
+                        <h3>
+                            <%= pergunta.titulo%>
+                        </h3>
+                        <p>
+                            <%= pergunta.descricao%>
+                        </p>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="/responder">
+                            <h3>Responda</h3>
+                            <label for="resposta">Resposta:</label>
+                            <textarea class="form-control" name="resposta" id="resposta" rows="5" placeholder="Responda aqui..."></textarea>
+                            <input type="hidden" name="id_pergunta" id="id_pergunta" value="<%=pergunta.id%>">
+                            <button type="submit" class="btn btn-dark form-control">Responder</button>
+                        </form>
+                        <hr>
+                        <h3>Respostas</h3>
+                        <%respostas.forEach(resposta =>{%>
+                            <br>
+                            <div class="card">
+                                <div class="card-body">
+                                    <p>
+                                        <%= resposta.corpo %>
+                                    </p>
+                                </div>
+                            </div>
+                            <%})%>
+                                <hr>
+                                <!--
+                            <form method="POST" action="/salvarpergunta">
+                                <label for="titulo">Titulo</label>
+                                <input type="text" id="titulo" name="titulo" placeholder="titulo" class="form-control">
+                                <br><label for="descricao">descricao</label>
+                                <textarea id="descricao" rows="5" name="descricao" class="form-control" placeholder="Descreva a pergunta"></textarea>
+                                <br><button class="btn btn-dark">Perguntar</button>
+                            </form>
+                        -->
+                    </div>
+                </div>
+
+
+            </div>
+
+    </body>
+    <%- include('partials/footer.ejs')%>
