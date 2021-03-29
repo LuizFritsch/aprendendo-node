@@ -1,0 +1,15 @@
+{
+  "name": "projeto_perguntas_respostas",
+  "version": "1.0.0",
+  "description": "plataforma de perguntas e respostas estilo quora",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "luiz fritsch",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.6",
+    "express": "^4.17.1"
+  }
+}
