@@ -111,7 +111,7 @@ app.post("/responder", function(req, res) {
 });
 
 app.listen(
-    8080, () => {
+    80, () => {
         console.log("app rodando");
     }
 );
