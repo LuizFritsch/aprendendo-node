@@ -3,7 +3,15 @@ const app = express();
 const bodyParser = require("body-parser");
 //database
 const conn = require('./database/database');
+//view engine
+app.set('view engine', 'ejs');
 
+//static files
+app.use(express.static(__dirname + '/public'));
+
+//bodyparser
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 /**
  * import controllers
  */
@@ -19,15 +27,7 @@ conn.authenticate().then(() => {
     console.log(msgErro);
 });
 
-//view engine
-app.set('view engine', 'ejs');
 
-//static files
-app.use(express.static('public'));
-
-//bodyparser
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
 /**
  * categories route import from controller
