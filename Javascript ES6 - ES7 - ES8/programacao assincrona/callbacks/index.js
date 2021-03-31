@@ -52,6 +52,27 @@ function buscarEmailNoBanco(id) {
         }, 2000);
     })
 }
+/**
+ * desafio
+ * TRANSFORMAR ESSE HELL PRIMISES ALI DE BAIXO EM ASYNC AWAIT
+ */
+async function principal() {
+    var id = await pegarId();
+    var email = await buscarEmailNoBanco(id);
+    /**
+     * pra tratar erro no async await utilizamos try catch
+     */
+    try {
+        envia_email(`email enviado para ${email}`, email).then((result) => {
+            console.log(result);
+        });
+    } catch (error) {
+        console.log(error);
+    }
+    //bloqueia o fluxo do codigo e so printa o ola dps, diferente dos outros
+    console.log('ola');
+}
+principal();
 
 pegarId().then((id) => {
     buscarEmailNoBanco(id).then((email) => {
