@@ -4,9 +4,25 @@ const cors = require("cors")
 const bodyparser = require("body-parser")
 app.use(cors());
 app.use(express.urlencoded({ extended: true }))
-app.use(express.json());
+app.use(express.json())
+const jwt = require("jsonwebtoken")
+
+const jwtSecret = "12030912bnkbdsLKSDHFLKSDGHF98yudas08f7fyg8*";
 
 var db = {
+    users: [{
+            id: 1,
+            name: "luiz",
+            email: "fritsch.guilherm3@gmail.com",
+            password: "123"
+        },
+        {
+            id: 2,
+            name: "guilherme",
+            email: "fritsch.luiz@gmail.com",
+            password: "123"
+        }
+    ],
     games: [{
             id: 1,
             name: "tibia",
@@ -32,7 +48,7 @@ var db = {
  * endpoint
  * list all games
  */
-app.get("/games", (req, res) => {
+app.get("/games", auth, (req, res) => {
     res.statusCode = 200;
     res.json(db.games);
 });
@@ -134,6 +150,60 @@ app.put("/game/:id", (req, res) => {
             res.sendStatus(404);
         }
 
+    }
+});
+/**
+ * middleware 
+ */
+function auth(req, res, next) {
+    const authToken = req.headers['authorization'];
+    console.log(authToken);
+    if (authToken != undefined) {
+        const bearer = authToken.split(" ");
+        const token = bearer[1];
+        jwt.verify(token, jwtSecret, (err, data) => {
+            if (err) {
+                res.status(401)
+                res.json({ err: "token invalido" })
+            } else {
+                console.log(data);
+                next();
+            }
+        }).catch();
+
+    } else {
+        res.status(401)
+        res.json("token invalido")
+    }
+}
+app.post("/auth", (req, res) => {
+    var { email, password } = req.body
+    console.log(req.body)
+    if (email != undefined) {
+        var user = db.users.find(u => email == email);
+        console.log(user);
+        if (user != undefined) {
+            if (user.password == password) {
+                jwt.sign({ id: user.id, email: user.email }, jwtSecret, { expiresIn: '48h' }, (err, token) => {
+                    if (err) {
+                        res.status(400)
+                        res.json({ err: "falha interna" })
+                    } else {
+                        res.status(200)
+                        res.json({ token: token })
+                    }
+                })
+            } else {
+                res.status(401)
+                res.json("credenciais invalidas")
+            }
+        } else {
+            res.status(404)
+            res.json("email enviado nao encontrado")
+        }
+    } else {
+        res.status(404)
+        res.json("email invalido")
     }
 });
 
