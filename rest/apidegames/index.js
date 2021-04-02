@@ -167,9 +167,11 @@ function auth(req, res, next) {
                 res.json({ err: "token invalido" })
             } else {
                 console.log(data);
+                req.token = token;
+                req.loggedUser = { id: data.id, email: data.email };
                 next();
             }
-        }).catch();
+        })
 
     } else {
         res.status(401)
