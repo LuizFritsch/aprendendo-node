@@ -49,8 +49,25 @@ var db = {
  * list all games
  */
 app.get("/games", auth, (req, res) => {
+
+    var HATEOS = [{
+            href: "http://localhost/game/0",
+            method: "DELETE",
+            rel: "delete_game"
+        },
+        {
+            href: "http://localhost/game/0",
+            method: "GET",
+            rel: "get_game"
+        },
+        {
+            href: "http://localhost/auth",
+            method: "POST",
+            rel: "login"
+        }
+    ]
     res.statusCode = 200;
-    res.json(db.games);
+    res.json({ games: db.games, _links: HATEOS });
 });
 
 /**
@@ -66,10 +83,27 @@ app.get("/game/:id", (req, res) => {
     } else {
         id = parseInt(id);
 
+        var HATEOS = [{
+                href: "http://localhost/game/" + id,
+                method: "DELETE",
+                rel: "delete_game"
+            },
+            {
+                href: "http://localhost/game/" + id,
+                method: "PUT",
+                rel: "edit_game"
+            },
+            {
+                href: "http://localhost/games/",
+                method: "GET",
+                rel: "get_games"
+            }
+        ]
+
         var game = db.games.find(g => g.id == id);
         console.log(game);
         if (game) {
-            res.json(game);
+            res.json({ game: game, _links: HATEOS });
         } else {
             //game with id not found
             res.sendStatus(404);
