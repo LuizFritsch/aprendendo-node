@@ -1,0 +1,42 @@
+<%- include('./partials/header.ejs') %>
+    <%- include('./partials/navbar.ejs') %>
+
+        <body>
+            <div class="container">
+                <div class="card">
+                    <hr>
+                    <div class="card-header text-center">
+                        <h4>Login</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="/form">
+
+                            <!--
+                                form login bonitin
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" name="email" id="email" placeholder="Type your email...">
+                                <label for="email">Password</label>
+                                <input type="password" class="form-control" name="password" id="password" placeholder="Type your password...">
+                                <br>
+                            -->
+
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" name="email" id="email" placeholder="Type your email..." value="<%= email %>">
+                            <small><%= emailError %></small>
+                            <br>
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" name="name" id="text" placeholder="Type your name..." value="<%= name %>">
+                            <small><%= nameError %></small>
+                            <br>
+                            <label for="points">Points</label>
+                            <input type="number" class="form-control" name="points" id="points" placeholder="Type your points..." value="<%= points %>">
+                            <small><%= pointsError %></small>
+                            <br>
+                            <button type="submit" class="btn btn-dark btn-block">Send</button>
+                        </form>
+                        <hr>
+                    </div>
+                </div>
+            </div>
+        </body>
+        <%- include('./partials/footer.ejs') %>
