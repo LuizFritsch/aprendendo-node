@@ -1,5 +1,9 @@
 var User = require('../models/User')
 var PasswordToken = require('../models/PasswordToken')
+var bcrypt = require("bcrypt");
+var jwt = require("jsonwebtoken");
+
+var secret = "secret!@&#*76328432409843*&@$^#*)&^#@";
 class UserController {
     async index(req, res) {
         try {
@@ -125,6 +129,40 @@ class UserController {
                 res.status(response.status);
                 res.send(response.msg)
             }
+        }
+    }
+
+    async login(req, res) {
+        try {
+            var { email, password } = req.body;
+            if (email == undefined) {
+                res.status(404);
+                res.json({ msg: "invalid email..." })
+            } else {
+                if (password == undefined) {
+                    res.status(404);
+                    res.json({ msg: "invalid password..." })
+                } else {
+                    var user = await User.findByEmail(email);
+                    if (user != undefined) {
+                        var result = await bcrypt.compare(password, user.password);
+                        if (result) {
+                            var token = jwt.sign({ email: user.email, role: user.role }, secret);
+                            res.status(200);
+                            res.json({ token: token });
+                        } else {
+                            res.status(406);
+                            res.send("password does not match...");
+                        }
+                    } else {
+                        res.status(404);
+                        res.send("user not found...");
+                    }
+                }
+            }
+        } catch (error) {
+            console.log(error);
+            res.json({ status: false });
         }
     }
 

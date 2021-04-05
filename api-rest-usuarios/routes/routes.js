@@ -3,18 +3,19 @@ var app = express();
 var router = express.Router();
 var HomeController = require("../controllers/HomeController");
 var UserController = require("../controllers/UserController");
+var AdminAut = require("../middleware/AdminAuth");
 
 router.get('/', HomeController.index);
 
 /**
  * route to create a user
  */
-router.post('/user', UserController.create);
+router.post('/user', AdminAut, UserController.create);
 
 /**
  * route to list all users
  */
-router.get('/user', UserController.index);
+router.get('/user', AdminAut, UserController.index);
 
 /**
  * route to find user by id
@@ -41,5 +42,11 @@ router.post('/recoverPassword', UserController.recoverPassword);
  * route to change password by email
  */
 router.post('/changePassword', UserController.changePassword);
+
+/**
+ * route to change password by email
+ */
+router.post('/login', UserController.login);
+
 
 module.exports = router;
