@@ -20,21 +20,21 @@ router.get('/user', AdminAut, UserController.index);
 /**
  * route to find user by id
  */
-router.get('/user/:id', UserController.findUser);
+router.get('/user/:id', AdminAut, UserController.findUser);
 
 
 /**
  * route to edit user by id
  */
-router.put('/user/:id', UserController.edit);
+router.put('/user/:id', AdminAut, UserController.edit);
 
 /**
  * route to delete user by id
  */
-router.delete('/user/:id', UserController.delete);
+router.delete('/user/:id', AdminAut, UserController.delete);
 
 /**
- * route to recover password by email
+ * route to request a recover password by email
  */
 router.post('/recoverPassword', UserController.recoverPassword);
 
