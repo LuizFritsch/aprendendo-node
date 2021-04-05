@@ -1,17 +1,21 @@
 <template>
-    <div>
-        <h2>Cliente Aqui!</h2>    
-        <h2 id="cliente-nome">{{ nome }}</h2> 
+    <div :class="{'cliente':!ehPremium, 'cliente-premium': ehPremium}">
+        <h4>Nome: {{cliente.nome}}</h4>
         <hr>
-        <p>email do cliente {{email}}</p>
-        <input type="text" v-model="nome">
-        <input type="text" :value="nome">
-        <input type="text" :value="email">
-        <input type="text" v-model="email">
-        <input type="text" :value="idade">
-        <input type="text" v-model="idade">
-        <input type="text" :value="numero">
-        <input type="text" v-model="numero">
+        <p>{{descricao}}</p>
+        <hr>
+        <p>Numero: {{numero}}</p>
+        <hr>
+        <p>Email: {{cliente.email | processarEmail}}</p>
+        <hr> 
+        <!--<p v-show="mostrarIdade">Idade: {{cliente.idade}}</p>
+        -->
+        <p v-if="mostrarIdade">Idade: {{cliente.idade}}</p>
+        <p v-else>o usuario escondeu a idade</p>
+        <button @click="mudarCor($event)">mudar cor</button>
+        <button @click="emitirEventoDelete">Excluir</button>
+        <h4>id especial {{idEspecial}}</h4>
+        <hr>
     </div>
 </template>
 
@@ -20,12 +24,43 @@
 export default {
     data(){
         return {
-            nome : "luiz",
             numero : "123",
-            email : "321",
-            idade : 0
+            descricao: "asdjsiaohdosa",
+            ehPremium: false
+        }
+    },
+    props:{
+        nome: String,
+        email: String,
+        idade: Number,
+        cliente: Object,
+        mostrarIdade: Boolean
+    },
+    methods:{
+        mudarCor: function($event) {
+            console.log($event);
+            this.ehPremium = !this.ehPremium;
+        },
+        emitirEventoDelete:function(){
+            console.log("emitindo evento do filho");
+            this.$emit("meDelete",{component:this, id:this.cliente.id})
+        },
+        testar:function () {
+            console.log("testando pra valer");
+            alert(123)
+        }
+    },
+    filters:{
+        processarEmail: function(value) {
+            return value.toUpperCase();
+        }
+    },
+    computed:{
+        idEspecial: function() {
+            return (this.cliente.email+this.cliente.nome+this.cliente.id).toUpperCase();
         }
     }
+
 }
 
 </script>
@@ -33,6 +68,12 @@ export default {
 <style scoped>
 hr{
     border-color: brown;
-    border-width: 10px;
+}
+.cliente{
+    background-color: burlywood;
+}
+.cliente-premium{
+    background-color: black;
+    color: gold;
 }
 </style>
