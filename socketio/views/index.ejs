@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+    <h1>Chat</h1>
+    <hr>
+    <div class="container">
+        <div class="col-md-12">
+            <div id="chat" style="width: 100%; border: 1px; border-color: black; border-width: 1px; max-height: 500px; background-color: aliceblue; overflow-y: scroll;">
+
+            </div>
+        </div>
+        <div class="col-md-12 row">
+            <div class="col-md-4">
+                <input class="form-control" type="text" id="msg" name="msg" placeholder="mande sua msg...">
+            </div>
+            <div class="col-md-4">
+                <input class="form-control" type="text" id="user" name="user" placeholder="digite seu user...">
+            </div>
+            <div class="col-md-2">
+                <button onclick="enviar()" class="form-control btn btn-primary">Enviar</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+<script>
+    var socket = io("http://localhost");
+    socket.on("disconnect", () => {
+        console.log("desconectado");
+    });
+
+    socket.on("msg", data => {
+        var divChat = document.getElementById("chat");
+        var htmlMSG = `
+        <div class='col-md-12 row'>
+            <div class='col-md-6'>
+                <p>${data.user} diz:
+                ${data.msg}</p>
+            </div>
+        </div>
+        `
+        divChat.innerHTML += htmlMSG;
+    })
+
+    function enviar() {
+        var msgField = document.getElementById("msg");
+        var userField = document.getElementById("user");
+        var msg = msgField.value;
+        var user = userField.value;
+        socket.emit("msg", {
+            msg,
+            user
+        });
+    }
+</script>
+
+</html>
