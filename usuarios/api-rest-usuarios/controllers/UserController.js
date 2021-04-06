@@ -16,14 +16,18 @@ class UserController {
 
     async findUser(req, res) {
         var id = req.params.id;
+        console.log("id")
+        console.log(id)
         if (id == undefined || isNaN(id)) {
             res.status(400);
             res.json({ msg: "invalid id..." });
         } else {
             try {
                 var user = await User.findByID(id);
+                console.log("user")
+                console.log(user)
                 if (user == undefined) {
-                    res.status(400);
+                    res.status(404);
                     res.json({ msg: "user not found..." });
                 } else {
                     res.status(200);
@@ -37,25 +41,23 @@ class UserController {
 
     async create(req, res) {
         var { email, name, password, role } = req.body;
-        if (email == undefined) {
+        if (email == undefined || email == '' || email == ' ') {
             res.status(400);
             res.json({ msg: "invalid email..." });
             return;
         }
-        if (name == undefined) {
+        if (name == undefined || name == '' || name == ' ') {
             res.status(400);
             res.json({ msg: "invalid name..." });
             return;
         }
-        if (password == undefined) {
+        if (password == undefined || password == '' || password == ' ') {
             res.status(400);
             res.json({ msg: "invalid password..." });
             return;
         }
         if (role == undefined) {
-            res.status(400);
-            res.json({ msg: "invalid role..." });
-            return;
+            role = 0;
         }
 
         var emailExists = await User.findEmail(email);
@@ -67,7 +69,13 @@ class UserController {
         }
 
         try {
-            await User.new(req.body);
+            var user = {
+                email,
+                password,
+                role,
+                name
+            }
+            await User.new(user);
             res.status(200);
             res.json({ msg: "success" })
         } catch (error) {
@@ -88,12 +96,15 @@ class UserController {
 
     async delete(req, res) {
         try {
-            var result = await User.delete(req.params.id);
+            var id = req.params.id;
+            var result = await User.delete(id);
             res.status(result.status);
             res.json(result.msg)
         } catch (error) {
-            console.log(error)
+            res.status(406);
+            res.json({ status: 406, msg: error })
         }
+
     }
 
     async recoverPassword(req, res) {
@@ -135,11 +146,11 @@ class UserController {
     async login(req, res) {
         try {
             var { email, password } = req.body;
-            if (email == undefined) {
+            if (email == undefined || email == '' || email == ' ') {
                 res.status(404);
                 res.json({ msg: "invalid email..." })
             } else {
-                if (password == undefined) {
+                if (password == undefined || password == '' || password == ' ') {
                     res.status(404);
                     res.json({ msg: "invalid password..." })
                 } else {
@@ -152,11 +163,11 @@ class UserController {
                             res.json({ token: token });
                         } else {
                             res.status(406);
-                            res.send("password does not match...");
+                            res.json({ msg: "password does not match..." });
                         }
                     } else {
                         res.status(404);
-                        res.send("user not found...");
+                        res.json({ msg: "user not found..." });
                     }
                 }
             }

@@ -4,7 +4,11 @@ const PasswordToken = require("./PasswordToken");
 class User {
 
     async delete(id) {
-        var user = await this.findByID(id);
+        try {
+            var user = await this.findByID(id);
+        } catch (error) {
+            return { status: 400, msg: "invalid id..." }
+        }
         if (isNaN(id)) {
             return { status: 400, msg: "invalid id..." }
         }
@@ -34,7 +38,7 @@ class User {
         try {
             var result = await knex.select(["id", "email", "role", "name"]).table("users").where({ id: id });
             if (result.length > 0) {
-                return result;
+                return result[0];
             } else {
                 return undefined;
             }
