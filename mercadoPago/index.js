@@ -1,17 +1,36 @@
-const express = require("express");
+const express = require('express');
 const MercadoPago = require("mercadopago");
 const app = express();
 app.use(express.static("public"));
 const { v4: uuidv4 } = require('uuid');
+const https = require('https');
+const fs = require('fs');
+const port = 80;
+
+var key = fs.readFileSync(__dirname + '/selfsigned.key');
+var cert = fs.readFileSync(__dirname + '/selfsigned.crt');
+var options = {
+    key: key,
+    cert: cert
+};
+
+app.get('/', (req, res) => {
+    res.send('Now using https..');
+});
+
+var server = https.createServer(options, app);
+
+server.listen(port, () => {
+    console.log("server starting on port : " + port)
+});
+
 
 MercadoPago.configure({
     sandbox: true,
     access_token: "TEST-621142151203309-040716-78c52a18a132e78e7b4541edbeb08533-254886005"
 });
 
-app.get("/", (req, res) => {
-    res.send("ola mundo")
-});
+
 
 app.get("/pagar", async(req, res) => {
     //id //itens.item.id //payer.email //status
@@ -58,4 +77,27 @@ app.get("/pagar", async(req, res) => {
     }
 });
 
-app.listen(80, () => { console.log("servidor rodando"); });
+app.post("/notificacao", (req, res) => {
+
+    var id = req.query.id;
+    setTimeout(() => {
+        var filtro = {
+            "order.id": id
+        }
+        MercadoPago.payment.search({
+            qs: filtro
+        }).then((result) => {
+            console.log(result.data);
+            var pagamento = result.data.results[0];
+            if (pagamento != undefined) {
+                console.log(pagamento);
+                res.send("OK");
+            } else {
+                console.log("pagamento nao existe");
+            }
+        }).catch((err) => {
+            console.log(err);
+        });
+
+    }, 20000);
+})
