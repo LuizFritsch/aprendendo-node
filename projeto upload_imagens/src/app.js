@@ -24,8 +24,29 @@ app.get("/", (req, res) => {
 
 app.post("/auth", async(req, res) => {
     let { email, senha } = req.body;
+    /*if (email == undefined || email == "" || email == " ") {
+        res.sendStatus(400);
+        return;
+    }
+    if (senha == undefined || senha == "" || senha == " ") {
+        res.sendStatus(400);
+        return;
+    }*/
+    let user = await Usuario.findOne({ "email": email })
+    if (user == undefined) {
+        res.statusCode = 403;
+        res.json({ errors: { email: "Email não cadastrado..." } });
+        return;
+    } else {
+        let isSenhaValid = await bcrypt.compare(senha, user.senha);
+        if (!isSenhaValid) {
+            res.statusCode = 403;
+            res.json({ errors: { email: 'ok', senha: "Senha incorreta..." } });
+            return;
+        }
+    }
 
-    jwt.sign({ email }, secret, { expiresIn: '1h' }, (err, token) => {
+    jwt.sign({ email, name: user.name, id: user._id }, secret, { expiresIn: '1h' }, (err, token) => {
         if (err) {
             console.log(err);
             res.sendStatus(500);
@@ -34,6 +55,7 @@ app.post("/auth", async(req, res) => {
             res.json({ token })
         }
     })
+
 
 });
 

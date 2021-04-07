@@ -10,21 +10,11 @@ let usuarioPrincipal = {
 }
 
 beforeAll(() => {
-    console.log("iniciando switch de testes...");
-    //inserir usuario global luiz no banco
-    return request.post("/user").send(usuarioPrincipal).then((result) => {}).catch((err) => {
+    return request.post("/usuario").send(usuarioPrincipal).then((result) => {
+        console.log(result);
+    }).catch((err) => {
         console.log(err);
     });
-
-})
-
-afterAll(() => {
-    console.log("finalizando switch de testes...");
-    //deletar usuario global luiz do banco
-    return request.delete(`/usuario/deleta/enigma/${usuarioPrincipal.email}`).then((result) => {}).catch((err) => {
-        console.log(err);
-    });
-
 })
 
 
@@ -94,4 +84,29 @@ describe("Autenticacao", () => {
             fail(err)
         });
     })
+
+    test("Deve impedir que um usuario nao cadastrado se logue", () => {
+        return request.post("/auth").send({ email: "usuarionaocadastrado@gmail.com", senha: "usuarioPrincipal.senha" }).then((result) => {
+            expect(result.statusCode).toEqual(403);
+            expect(result.body.errors.email).toEqual("Email não cadastrado...");
+        }).catch((err) => {
+            fail(err)
+        });
+    })
+
+    test("Deve impedir que um usuario se logue com a senha errada", () => {
+        return request.post("/auth").send({ email: usuarioPrincipal.email, senha: "senhaErrada" }).then((result) => {
+            expect(result.statusCode).toEqual(403);
+            expect(result.body.errors.senha).toEqual("Senha incorreta...");
+        }).catch((err) => {
+            fail(err)
+        });
+    })
+
+})
+
+afterAll(() => {
+    return request.delete(`/usuario/deleta/enigma/${usuarioPrincipal.email}`).then((result) => {}).catch((err) => {
+        console.log(err);
+    });
 })
