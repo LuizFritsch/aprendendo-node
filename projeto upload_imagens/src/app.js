@@ -4,6 +4,7 @@ let mongoose = require("mongoose");
 let user = require("../models/Usuario");
 let bcrypt = require("bcrypt");
 let jwt = require("jsonwebtoken");
+let secret = "S123E321C456R654E123456T654321";
 
 mongoose.connect("mongodb://localhost:27017/galeria", { useNewUrlParser: true, useUnifiedTopology: true }).then((result) => {
     //console.log("conectado com o banco...");
@@ -19,6 +20,21 @@ app.use(express.json());
 
 app.get("/", (req, res) => {
     res.json({});
+});
+
+app.post("/auth", async(req, res) => {
+    let { email, senha } = req.body;
+
+    jwt.sign({ email }, secret, { expiresIn: '1h' }, (err, token) => {
+        if (err) {
+            console.log(err);
+            res.sendStatus(500);
+            return;
+        } else {
+            res.json({ token })
+        }
+    })
+
 });
 
 app.post("/usuario", async(req, res) => {
