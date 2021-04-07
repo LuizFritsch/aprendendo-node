@@ -83,3 +83,15 @@ describe("Cadastro de usuario", () => {
 
 
 })
+
+
+describe("Autenticacao", () => {
+    test("Deve me retornar um token quando logar", () => {
+        return request.post("/auth").send({ email: usuarioPrincipal.email, senha: usuarioPrincipal.senha }).then((result) => {
+            expect(result.statusCode).toEqual(200);
+            expect(result.body.token).toBeDefined();
+        }).catch((err) => {
+            fail(err)
+        });
+    })
+})
